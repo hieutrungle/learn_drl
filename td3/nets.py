@@ -25,7 +25,13 @@ class CriticNetwork(keras.Model):
         self.fc2 = Dense(self.fc2_dims, activation="relu")
         self.q = Dense(1, activation=None)
 
-    @tf.function(reduce_retracing=True)
+    @tf.function(
+        reduce_retracing=True,
+        input_signature=[
+            tf.TensorSpec(shape=[None, 24], dtype=tf.float32),
+            tf.TensorSpec(shape=[None, 4], dtype=tf.float32),
+        ],
+    )
     def call(self, state, action):
         action_value = self.fc1(tf.concat([state, action], axis=1))
         action_value = self.fc2(action_value)
@@ -62,7 +68,10 @@ class ActorNetwork(keras.Model):
         self.fc2 = Dense(self.fc2_dims, activation="relu")
         self.mu = Dense(self.n_actions, activation="tanh")
 
-    @tf.function(reduce_retracing=True)
+    @tf.function(
+        reduce_retracing=True,
+        input_signature=[tf.TensorSpec(shape=[None, 24], dtype=tf.float32)],
+    )
     def call(self, state):
         prob = self.fc1(state)
         prob = self.fc2(prob)

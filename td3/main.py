@@ -13,6 +13,9 @@ if __name__ == "__main__":
         env=env,
         n_actions=env.action_space.shape[0],
     )
+    # print(f"observation space: {env.observation_space.shape}")
+    # print(f"action space: {env.action_space.shape}")
+    # exit()
     n_games = 2000
     filename = "results/plots/bipedal_walker.png"
 

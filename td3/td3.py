@@ -106,19 +106,21 @@ class Agent:
         weights = []
         targets = self.target_actor.weights
         for i, weight in enumerate(self.actor.weights):
-            weights.append(weight * tau + targets[i] * (1 - tau))
+            weights.append(tf.convert_to_tensor(weight * tau + targets[i] * (1 - tau)))
+            # weights.append(weight * tau + targets[i] * (1 - tau))
         self.target_actor.set_weights(weights)
 
         weights = []
         targets = self.target_critic_1.weights
         for i, weight in enumerate(self.critic_1.weights):
-            weights.append(weight * tau + targets[i] * (1 - tau))
+            weights.append(tf.convert_to_tensor(weight * tau + targets[i] * (1 - tau)))
+            # weights.append(weight * tau + targets[i] * (1 - tau))
         self.target_critic_1.set_weights(weights)
 
         weights = []
         targets = self.target_critic_2.weights
         for i, weight in enumerate(self.critic_2.weights):
-            weights.append(weight * tau + targets[i] * (1 - tau))
+            weights.append(tf.convert_to_tensor(weight * tau + targets[i] * (1 - tau)))
         self.target_critic_2.set_weights(weights)
 
     def remember(self, state, action, reward, new_state, done):
@@ -196,7 +198,9 @@ class Agent:
 
             next_critic_value = tf.math.minimum(next_q1, next_q2)
 
-            target = rewards + self.gamma * next_critic_value * (1 - done)
+            target = rewards + self.gamma * next_critic_value * (
+                tf.constant(1.0) - done
+            )
             critic_1_loss = keras.losses.MSE(target, q1)
             critic_2_loss = keras.losses.MSE(target, q2)
 
@@ -215,22 +219,22 @@ class Agent:
         )
         self.learn_step_cntr += 1
 
-        if self.learn_step_cntr % self.update_actor_interval == 0:
+        # if self.learn_step_cntr % self.update_actor_interval == 0:
 
-            # update the actor network
-            with tf.GradientTape() as tape:
-                new_actions = self.actor(states)
-                # critic outputs the value of the state-action pair
-                # similar to the reward but with specific state-action pairs
-                # we want to maximize the value of the state-action pair -> gradient ascent
-                q1 = -self.critic_1(states, new_actions)
-                actor_loss = tf.math.reduce_mean(q1)
+        #     # update the actor network
+        #     with tf.GradientTape() as tape:
+        #         new_actions = self.actor(states)
+        #         # critic outputs the value of the state-action pair
+        #         # similar to the reward but with specific state-action pairs
+        #         # we want to maximize the value of the state-action pair -> gradient ascent
+        #         q1 = -self.critic_1(states, new_actions)
+        #         actor_loss = tf.math.reduce_mean(q1)
 
-            actor_network_gradient = tape.gradient(
-                actor_loss, self.actor.trainable_variables
-            )
-            self.actor.optimizer.apply_gradients(
-                zip(actor_network_gradient, self.actor.trainable_variables)
-            )
+        #     actor_network_gradient = tape.gradient(
+        #         actor_loss, self.actor.trainable_variables
+        #     )
+        #     self.actor.optimizer.apply_gradients(
+        #         zip(actor_network_gradient, self.actor.trainable_variables)
+        #     )
 
-            self.update_network_parameters()
+        #     self.update_network_parameters()
