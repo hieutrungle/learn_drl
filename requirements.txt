@@ -7,5 +7,6 @@ torch
 torchvision
 torchaudio
 swig
+jax[cuda12_pip]
 gymnasium[box2d]
 gymnasium[all]
