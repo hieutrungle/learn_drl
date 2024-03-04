@@ -1,0 +1,8 @@
+tensorflow[and-cuda]
+numpy
+scipy
+pandas
+matplotlib
+torch
+torchvision
+torchaudio
