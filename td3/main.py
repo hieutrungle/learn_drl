@@ -14,7 +14,7 @@ if __name__ == "__main__":
         n_actions=env.action_space.shape[0],
     )
     n_games = 100
-    filename = "tmp/plots/bipedal_walker.png"
+    filename = "results/plots/bipedal_walker.png"
 
     best_score = env.reward_range[0]
     score_history = []

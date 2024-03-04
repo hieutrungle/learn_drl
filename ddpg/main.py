@@ -12,7 +12,7 @@ if __name__ == "__main__":
         n_actions=env.action_space.shape[0],
     )
     n_games = 1000
-    filename = "tmp/plots/pendulum.png"
+    filename = "results/plots/pendulum.png"
 
     best_score = env.reward_range[0]
     score_history = []
