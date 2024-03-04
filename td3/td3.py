@@ -39,7 +39,7 @@ class Agent:
             batch_size: the size of the batch
             noise: the noise to add to the action
         """
-        self.gamma = gamma
+        self.gamma = tf.convert_to_tensor(gamma, dtype=tf.float32)
         self.tau = tau
         self.memory = ReplayBuffer(max_size, input_dims, n_actions)
         self.batch_size = batch_size
@@ -50,7 +50,9 @@ class Agent:
         self.learn_step_cntr = 0
         self.time_step = 0
         self.max_action = env.action_space.high[0]
+        self.max_action = tf.convert_to_tensor(self.max_action, dtype=tf.float32)
         self.min_action = env.action_space.low[0]
+        self.min_action = tf.convert_to_tensor(self.min_action, dtype=tf.float32)
 
         self.actor = ActorNetwork(
             n_actions=n_actions,
@@ -161,14 +163,15 @@ class Agent:
         if self.memory.mem_cntr < self.batch_size:
             return
 
-        state, action, reward, new_state, done = self.memory.sample_buffer(
+        states, actions, rewards, new_states, done = self.memory.sample_buffer(
             self.batch_size
         )
 
-        states = tf.convert_to_tensor(state, dtype=tf.float32)
-        actions = tf.convert_to_tensor(action, dtype=tf.float32)
-        rewards = tf.convert_to_tensor(reward, dtype=tf.float32)
-        new_states = tf.convert_to_tensor(new_state, dtype=tf.float32)
+        states = tf.convert_to_tensor(states, dtype=tf.float32)
+        actions = tf.convert_to_tensor(actions, dtype=tf.float32)
+        rewards = tf.convert_to_tensor(rewards, dtype=tf.float32)
+        new_states = tf.convert_to_tensor(new_states, dtype=tf.float32)
+        done = tf.convert_to_tensor(done, dtype=tf.float32)
 
         # update the critic network
         with tf.GradientTape(persistent=True) as tape:
@@ -193,7 +196,7 @@ class Agent:
 
             next_critic_value = tf.math.minimum(next_q1, next_q2)
 
-            target = reward + self.gamma * next_critic_value * (1 - done)
+            target = rewards + self.gamma * next_critic_value * (1 - done)
             critic_1_loss = keras.losses.MSE(target, q1)
             critic_2_loss = keras.losses.MSE(target, q2)
 
