@@ -6,5 +6,6 @@ matplotlib
 torch
 torchvision
 torchaudio
+swig
 gymnasium[box2d]
 gymnasium[all]
