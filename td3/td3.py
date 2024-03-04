@@ -219,22 +219,22 @@ class Agent:
         )
         self.learn_step_cntr += 1
 
-        # if self.learn_step_cntr % self.update_actor_interval == 0:
+        if self.learn_step_cntr % self.update_actor_interval == 0:
 
-        #     # update the actor network
-        #     with tf.GradientTape() as tape:
-        #         new_actions = self.actor(states)
-        #         # critic outputs the value of the state-action pair
-        #         # similar to the reward but with specific state-action pairs
-        #         # we want to maximize the value of the state-action pair -> gradient ascent
-        #         q1 = -self.critic_1(states, new_actions)
-        #         actor_loss = tf.math.reduce_mean(q1)
+            # update the actor network
+            with tf.GradientTape() as tape:
+                new_actions = self.actor(states)
+                # critic outputs the value of the state-action pair
+                # similar to the reward but with specific state-action pairs
+                # we want to maximize the value of the state-action pair -> gradient ascent
+                q1 = -self.critic_1(states, new_actions)
+                actor_loss = tf.math.reduce_mean(q1)
 
-        #     actor_network_gradient = tape.gradient(
-        #         actor_loss, self.actor.trainable_variables
-        #     )
-        #     self.actor.optimizer.apply_gradients(
-        #         zip(actor_network_gradient, self.actor.trainable_variables)
-        #     )
+            actor_network_gradient = tape.gradient(
+                actor_loss, self.actor.trainable_variables
+            )
+            self.actor.optimizer.apply_gradients(
+                zip(actor_network_gradient, self.actor.trainable_variables)
+            )
 
-        #     self.update_network_parameters()
+            self.update_network_parameters()
