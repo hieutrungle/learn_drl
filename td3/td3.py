@@ -174,7 +174,9 @@ class Agent:
         with tf.GradientTape(persistent=True) as tape:
             target_actions = self.target_actor(new_states)
             target_actions = target_actions + tf.clip_by_value(
-                np.random.normal(scale=0.2), -0.5, 0.5
+                tf.random.normal(shape=target_actions.shape, mean=0.0, stddev=0.2),
+                -0.5,
+                0.5,
             )
             target_actions = tf.clip_by_value(
                 target_actions, self.min_action, self.max_action
