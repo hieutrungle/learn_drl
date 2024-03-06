@@ -6,7 +6,10 @@ matplotlib
 torch
 torchvision
 torchaudio
+tensorflow-probability
+pybullet
 swig
 setuptools
 jax[cuda12_pip]
 gymnasium[box2d]
+gymnasium[mujoco]
